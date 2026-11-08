@@ -1,4 +1,4 @@
-// Google Drive v3 REST client shared by GemiHub web (server + browser),
+// Google Drive v3 REST client shared by kiokuflow web (server + browser),
 // Obsidian and Desktop. The HTTP layer is injected (`DriveTransport`): fetch,
 // Obsidian `requestUrl` or a desktop plugin network API all fit, so request
 // building, pagination, multipart bodies, retries and errors are identical
@@ -255,7 +255,7 @@ export function createDriveClient<R extends DriveHttpResponse>(transport: DriveT
     return data.files?.[0] ?? null;
   }
 
-  /** Find or create a top-level app folder (e.g. "gemihub"). */
+  /** Find or create a top-level app folder (e.g. "kiokuflow"). */
   async function ensureRootFolder(accessToken: string, name: string, options: DriveOperationOptions = {}): Promise<string> {
     const existing = await findFolderByName(accessToken, name, undefined, options);
     return existing ? existing.id : (await createFolder(accessToken, name, undefined, options)).id;
@@ -291,7 +291,7 @@ export function createDriveClient<R extends DriveHttpResponse>(transport: DriveT
   }
 
   /**
-   * Syncable files in the flat root: no folders, no GemiHub system files and
+   * Syncable files in the flat root: no folders, no kiokuflow system files and
    * no Workspace-native files (Docs/Sheets/Slides have no alt=media content).
    */
   async function listUserFiles(accessToken: string, rootFolderId: string, options: DriveOperationOptions = {}): Promise<DriveFile[]> {

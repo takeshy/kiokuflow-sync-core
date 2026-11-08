@@ -6,14 +6,14 @@ import { SYNC_META_FILE_NAME, SETTINGS_FILE_NAME, ENCRYPTED_AUTH_FILE_NAME } fro
 
 export const SYNC_EXCLUDED_FILE_NAMES = new Set([SYNC_META_FILE_NAME, SETTINGS_FILE_NAME, ENCRYPTED_AUTH_FILE_NAME]);
 
-/** GemiHub system folders at the root of the sync folder. */
+/** kiokuflow system folders at the root of the sync folder. */
 export const SYNC_EXCLUDED_PREFIXES = [
   "history/",
   "trash/",
   "sync_conflicts/",
   "__TEMP__/",
   "plugins/",
-  "GemiHub/conflict-backups/",
+  "GemiHub/conflict-backups/", // Legacy backup path retained for existing workspaces.
 ];
 
 /** Folder names excluded at any depth (tooling output, never user content). */
@@ -33,7 +33,7 @@ function matchesPrefix(path: string, prefix: string): boolean {
   return prefix.endsWith("/") && path === prefix.slice(0, -1);
 }
 
-/** GemiHub system files and folders (no client-specific rules). */
+/** kiokuflow system files and folders (no client-specific rules). */
 export function isProjectInternalPath(fileName: string): boolean {
   const normalized = normalizePath(fileName);
   if (SYNC_EXCLUDED_FILE_NAMES.has(normalized)) return true;
@@ -70,7 +70,7 @@ export interface SyncExclusionOptions {
   /** Additional folder names excluded at any depth. */
   extraSegments?: readonly string[];
   /**
-   * Literal roots stripped before matching the system rules. GemiHub's project
+   * Literal roots stripped before matching the system rules. Legacy GemiHub project
    * storage keys carry "gemihub/" in front of history/, trash/, ...; Drive
    * paths never do, so Drive-only clients leave this empty.
    */

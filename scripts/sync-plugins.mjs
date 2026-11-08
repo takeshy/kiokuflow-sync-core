@@ -1,8 +1,8 @@
 // Pin every consumer to the library's current main commit.
 //
-//   npm run sync-plugins -- ../gemihub ../obsidian-gemihub ../gemihub-gdrive
+//   npm run sync-plugins -- ../kiokuflow ../obsidian-kiokuflow ../kiokuflow-gdrive
 //
-// Consumers depend on an exact commit ("github:takeshy/gemihub-sync-core#<sha>"),
+// Consumers depend on an exact commit ("github:takeshy/kiokuflow-sync-core#<sha>"),
 // so the commit must already be on origin/main or their `npm ci` would fail.
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -25,14 +25,14 @@ if (git(["status", "--porcelain"])) throw new Error("Commit library changes befo
 const commit = git(["rev-parse", "HEAD"]);
 // https (not ssh) so CI and Docker builds can fetch the public repository
 // without credentials.
-const repository = "https://github.com/takeshy/gemihub-sync-core.git";
+const repository = "https://github.com/takeshy/kiokuflow-sync-core.git";
 const remoteCommit = git(["ls-remote", repository, "refs/heads/main"]).split(/\s+/)[0];
 if (commit !== remoteCommit) throw new Error("Push the library commit to main before syncing consumers.");
 
 // Validate every target before updating any dependency.
 for (const consumer of consumers) {
   const manifest = JSON.parse(readFileSync(join(consumer, "package.json"), "utf8"));
-  if (manifest.name === "gemihub-sync-core") throw new Error(`${consumer} is the library itself.`);
+  if (manifest.name === "kiokuflow-sync-core") throw new Error(`${consumer} is the library itself.`);
 }
 
 for (const consumer of consumers) {
@@ -41,4 +41,4 @@ for (const consumer of consumers) {
     "install", "--no-audit", "--no-fund", "--save-exact", `git+${repository}#${commit}`,
   ], consumer);
 }
-console.log(`\nPinned ${consumers.length} consumer(s) to gemihub-sync-core#${commit}`);
+console.log(`\nPinned ${consumers.length} consumer(s) to kiokuflow-sync-core#${commit}`);

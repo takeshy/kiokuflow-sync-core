@@ -1,4 +1,4 @@
-// File type classification shared by every GemiHub client: which files are
+// File type classification shared by every kiokuflow client: which files are
 // synced as text vs. base64 binary, and which MIME type a new Drive file gets.
 // One table for all clients, so a file created on one side is typed the same
 // way everywhere.
@@ -9,7 +9,7 @@ const MIME_BY_EXTENSION: Record<string, string> = {
   markdown: "text/markdown",
   txt: "text/plain",
   log: "text/plain",
-  // GemiHub / Obsidian structured files
+  // kiokuflow / Obsidian structured files
   base: "text/yaml",
   kanban: "text/yaml",
   dashboard: "text/yaml",

@@ -1,4 +1,4 @@
-// `_sync-meta.json` storage on Drive, shared by every GemiHub client.
+// `_sync-meta.json` storage on Drive, shared by every kiokuflow client.
 //
 // Drive does not enforce unique names, so concurrent writers can create
 // duplicate `_sync-meta.json` files; every read consolidates them into the
@@ -56,7 +56,7 @@ function isNotFound(error: unknown): boolean {
 /**
  * Add or update the entry for a Drive file (typically an upload response).
  *
- * GemiHub keeps a file's publish state (`shared`, `webViewLink`, the signed
+ * kiokuflow keeps a file's publish state (`shared`, `webViewLink`, the signed
  * `publicPath`) only inside `_sync-meta.json`; Drive never returns it. The
  * fields are carried over from `previous` (defaults to the entry being
  * replaced), otherwise every push would un-publish the file.

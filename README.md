@@ -1,23 +1,23 @@
-# gemihub-sync-core
+# kiokuflow-sync-core
 
-Shared sync protocol core for GemiHub clients: `_sync-meta.json` diffing, conflict detection and Drive helpers for the web app, Obsidian and Desktop plugins.
+Shared sync protocol core for kiokuflow clients: `_sync-meta.json` diffing, conflict detection and Drive helpers for the web app, Obsidian and Desktop plugins.
 
-GemiHub stores a workspace **flat** in one Google Drive folder. A file's Drive name is its relative path, and `_sync-meta.json` in the same folder is the fileId → metadata registry. Every client that syncs this layout (GemiHub web, [obsidian-gemihub](https://github.com/takeshy/obsidian-gemihub), gemihub-gdrive) must agree on the same rules. This package holds those rules as pure, runtime-agnostic TypeScript. It does no I/O and has no runtime dependencies. Cryptography uses the standard Web Crypto API (`globalThis.crypto`), available in browsers, Node and Deno.
+kiokuflow stores a workspace **flat** in one Google Drive folder. A file's Drive name is its relative path, and `_sync-meta.json` in the same folder is the fileId → metadata registry. Every client that syncs this layout (kiokuflow web, [obsidian-kiokuflow](https://github.com/takeshy/obsidian-kiokuflow), kiokuflow-gdrive) must agree on the same rules. This package holds those rules as pure, runtime-agnostic TypeScript. It does no I/O and has no runtime dependencies. Cryptography uses the standard Web Crypto API (`globalThis.crypto`), available in browsers, Node and Deno.
 
 ## Contents
 
 | Entry point | What it provides |
 |---|---|
-| `gemihub-sync-core/protocol` | `SyncMeta` / `FileSyncMeta` types, system file names, `computeSyncDiff`, push guards (`remoteChangedSincePushSnapshot`, duplicate-path checks, pending-deletion cancellation), `_sync-meta.json` reconciliation (`pickSyncMetaToKeep`, `mergeSyncMetaSnapshots`, `isFileRemovedFromSyncRoot`, `addUntrackedFilesToSyncMeta`, `refreshDriftedSyncMetaEntries`, `reconcileSyncMetaWithListing`, `syncMetaFromDriveFiles`), `syncMetaSnapshotChanged`, `duplicateRemotePaths` |
-| `gemihub-sync-core/paths` | Sync exclusion: system files and folders, excluded folder names, user glob patterns (`isUserExcludedPath`), and `isSyncExcludedPath(path, options)` with client-specific prefixes and segments |
-| `gemihub-sync-core/files` | One text/binary/MIME table for every client: `shouldTreatAsBinaryFile`, `guessMimeType`, `isTextFileName`, `isBinaryMimeType`, `looksLikeBinary`, large-file threshold |
-| `gemihub-sync-core/conflict` | Conflict backup names: `buildConflictBackupName` (reversible, millisecond timestamp) and `parseConflictBackupName` (also reads every legacy format) |
-| `gemihub-sync-core/crypto` | Hybrid encryption (RSA-OAEP + AES-GCM, PBKDF2-protected private key) and the encrypted file envelope with searchable `description` / `publicMetadata`. Web Crypto only. `test/fixtures/gemihub-crypto.json` pins the on-disk format |
-| `gemihub-sync-core/auth` | External sync credentials: Migration Tool token (`encodeMigrationToken` / `decodeMigrationToken`), `_encrypted-auth.json` (`buildEncryptedAuthFile` / `parseEncryptedAuthFile` / `decryptEncryptedAuth`), and the token refresh request/response (`buildTokenRefreshRequest` / `parseTokenRefreshResponse` / `needsTokenRefresh`) |
-| `gemihub-sync-core/hash` | Pure-JS MD5 (`md5Hash`, `md5HashString`) for comparing content with Drive's `md5Checksum` |
-| `gemihub-sync-core/drive` | Drive v3 REST client over an injected transport (`createDriveClient`, `fetchTransport`, `headersFromRecord`): folders, paginated listing, text/binary read, multipart create, media update, rename/move/copy/delete, exact-name lookup; shared retry policy (429/500/503 with capped Retry-After; creates/copies (POST) retry only 429, since a 5xx may hide a completed create) and `DriveApiError` |
-| `gemihub-sync-core/sync-meta` | `_sync-meta.json` on Drive (`createSyncMetaStore(drive)`): duplicate consolidation, `read` / `write` (with a reusable file id), `rebuild` keeping client-stored fields, `update` (read–modify–write), and `readReconciled` (ID-verified removals, drift refresh, adoption of untracked files, with `isAdoptable` / `onListing` hooks). Pure `upsertDriveFileInMeta` (keeps publish state), `removeFilesFromMeta`, `syncMetaFromListing` |
-| `gemihub-sync-core` | Everything above |
+| `kiokuflow-sync-core/protocol` | `SyncMeta` / `FileSyncMeta` types, system file names, `computeSyncDiff`, push guards (`remoteChangedSincePushSnapshot`, duplicate-path checks, pending-deletion cancellation), `_sync-meta.json` reconciliation (`pickSyncMetaToKeep`, `mergeSyncMetaSnapshots`, `isFileRemovedFromSyncRoot`, `addUntrackedFilesToSyncMeta`, `refreshDriftedSyncMetaEntries`, `reconcileSyncMetaWithListing`, `syncMetaFromDriveFiles`), `syncMetaSnapshotChanged`, `duplicateRemotePaths` |
+| `kiokuflow-sync-core/paths` | Sync exclusion: system files and folders, excluded folder names, user glob patterns (`isUserExcludedPath`), and `isSyncExcludedPath(path, options)` with client-specific prefixes and segments |
+| `kiokuflow-sync-core/files` | One text/binary/MIME table for every client: `shouldTreatAsBinaryFile`, `guessMimeType`, `isTextFileName`, `isBinaryMimeType`, `looksLikeBinary`, large-file threshold |
+| `kiokuflow-sync-core/conflict` | Conflict backup names: `buildConflictBackupName` (reversible, millisecond timestamp) and `parseConflictBackupName` (also reads every legacy format) |
+| `kiokuflow-sync-core/crypto` | Hybrid encryption (RSA-OAEP + AES-GCM, PBKDF2-protected private key) and the encrypted file envelope with searchable `description` / `publicMetadata`. Web Crypto only. `test/fixtures/gemihub-crypto.json` pins the on-disk format |
+| `kiokuflow-sync-core/auth` | External sync credentials: Migration Tool token (`encodeMigrationToken` / `decodeMigrationToken`), `_encrypted-auth.json` (`buildEncryptedAuthFile` / `parseEncryptedAuthFile` / `decryptEncryptedAuth`), and the token refresh request/response (`buildTokenRefreshRequest` / `parseTokenRefreshResponse` / `needsTokenRefresh`) |
+| `kiokuflow-sync-core/hash` | Pure-JS MD5 (`md5Hash`, `md5HashString`) for comparing content with Drive's `md5Checksum` |
+| `kiokuflow-sync-core/drive` | Drive v3 REST client over an injected transport (`createDriveClient`, `fetchTransport`, `headersFromRecord`): folders, paginated listing, text/binary read, multipart create, media update, rename/move/copy/delete, exact-name lookup; shared retry policy (429/500/503 with capped Retry-After; creates/copies (POST) retry only 429, since a 5xx may hide a completed create) and `DriveApiError` |
+| `kiokuflow-sync-core/sync-meta` | `_sync-meta.json` on Drive (`createSyncMetaStore(drive)`): duplicate consolidation, `read` / `write` (with a reusable file id), `rebuild` keeping client-stored fields, `update` (read–modify–write), and `readReconciled` (ID-verified removals, drift refresh, adoption of untracked files, with `isAdoptable` / `onListing` hooks). Pure `upsertDriveFileInMeta` (keeps publish state), `removeFilesFromMeta`, `syncMetaFromListing` |
+| `kiokuflow-sync-core` | Everything above |
 
 Credentials, local storage and the HTTP transport stay in each client. The reconciliation helpers take Drive listings as plain objects (`DriveFileLike`), so any transport works: `fetch`, Obsidian `requestUrl`, or a desktop plugin network API.
 
@@ -26,7 +26,7 @@ Credentials, local storage and the HTTP transport stay in each client. The recon
 Consumers pin an exact commit:
 
 ```bash
-npm install --save-exact "github:takeshy/gemihub-sync-core#<commit-sha>"
+npm install --save-exact "github:takeshy/kiokuflow-sync-core#<commit-sha>"
 ```
 
 Older TypeScript setups (`moduleResolution: "node"`) resolve the subpath types through `typesVersions`.
@@ -34,9 +34,13 @@ Older TypeScript setups (`moduleResolution: "node"`) resolve the subpath types t
 npm runs `prepare` (the TypeScript build) when it installs a git dependency, so `dist/` is not committed. Build environments therefore need `git` available when they run `npm ci`.
 
 ```ts
-import { computeSyncDiff, type SyncMeta } from "gemihub-sync-core/protocol";
-import { isSyncExcludedPath } from "gemihub-sync-core/paths";
+import { computeSyncDiff, type SyncMeta } from "kiokuflow-sync-core/protocol";
+import { isSyncExcludedPath } from "kiokuflow-sync-core/paths";
 ```
+
+When migrating from `gemihub-sync-core`, remove the old dependency and update
+imports to `kiokuflow-sync-core` (including subpaths). The sync and encryption
+formats remain compatible with existing GemiHub data.
 
 The output is standard ESM with explicit `.js` import extensions. It loads directly in Node (for example, Vite SSR externals) and in Deno, and bundles with esbuild or Vite.
 
@@ -45,7 +49,7 @@ The output is standard ESM with explicit `.js` import extensions. It loads direc
 After a library commit is pushed to `main`, pin every consumer to it in one step:
 
 ```bash
-npm run sync-plugins -- ../gemihub ../obsidian-gemihub ../gemihub-gdrive
+npm run sync-plugins -- ../kiokuflow ../obsidian-kiokuflow ../kiokuflow-gdrive
 ```
 
 The script refuses to run while the library has uncommitted changes or when `HEAD` is not on `origin/main`. It validates every consumer's `package.json` first and then runs `npm install --save-exact git+https://…#<sha>` in each one. Review and commit each consumer's `package.json` and `package-lock.json` afterwards.

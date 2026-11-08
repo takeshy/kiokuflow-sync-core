@@ -102,7 +102,7 @@ export function isFileRemovedFromSyncRoot(file: DriveFileLike, rootFolderId: str
  * An external client (Desktop/Obsidian plugin) uploads files first and writes
  * the meta once at the end; a crash in between leaves live files that the
  * meta-driven diff never sees. Those clients self-heal on their next run by
- * listing Drive, so GemiHub's reconciliation does the same instead of waiting
+ * listing Drive, so kiokuflow's reconciliation does the same instead of waiting
  * for the user to run "Detect untracked files". `driveFiles` is a root listing
  * (folders, Workspace-native files and system files already filtered out).
  * Existing entries are never touched. Returns the added file ids.

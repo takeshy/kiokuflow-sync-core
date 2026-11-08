@@ -1,5 +1,5 @@
 // Hybrid encryption (RSA-OAEP + AES-GCM, PBKDF2-protected private key) and the
-// encrypted file envelope shared by GemiHub web, Obsidian and Desktop.
+// encrypted file envelope shared by kiokuflow web, Obsidian and Desktop.
 // Web Crypto only: runs in browsers, Node and Deno. The byte layout is a
 // compatibility contract — test/fixtures pins ciphertext written by GemiHub.
 

@@ -1,10 +1,10 @@
-// External sync credentials, shared by GemiHub web (issuer) and the Obsidian /
+// External sync credentials, shared by kiokuflow web (issuer) and the Obsidian /
 // Desktop plugins (consumers):
 //
-// 1. GemiHub mints a short-lived Migration Tool token (hex of the JSON
+// 1. kiokuflow mints a short-lived Migration Tool token (hex of the JSON
 //    `{ a: accessToken, r: rootFolderId }` XOR 0x5a). It is obfuscation only —
 //    the access token expires within the hour.
-// 2. With encryption enabled, GemiHub writes `_encrypted-auth.json` to the Drive
+// 2. With encryption enabled, kiokuflow writes `_encrypted-auth.json` to the Drive
 //    root: `{ refreshToken, apiOrigin }` hybrid-encrypted with the user's key.
 // 3. A plugin reads that file with the temporary token, unlocks it with the
 //    encryption password, and refreshes access tokens through
@@ -34,7 +34,7 @@ export function encodeMigrationToken(token: MigrationToken): string {
 
 export function decodeMigrationToken(token: string): MigrationToken {
   const clean = token.trim();
-  if (!clean || clean.length % 2 || !/^[0-9a-f]+$/i.test(clean)) throw new Error("Invalid GemiHub sync token.");
+  if (!clean || clean.length % 2 || !/^[0-9a-f]+$/i.test(clean)) throw new Error("Invalid kiokuflow sync token.");
   const bytes = new Uint8Array(clean.length / 2);
   for (let i = 0; i < bytes.length; i++) {
     bytes[i] = Number.parseInt(clean.slice(i * 2, i * 2 + 2), 16) ^ TOKEN_XOR_KEY;
@@ -43,10 +43,10 @@ export function decodeMigrationToken(token: string): MigrationToken {
   try {
     parsed = JSON.parse(new TextDecoder().decode(bytes));
   } catch {
-    throw new Error("Invalid GemiHub sync token payload.");
+    throw new Error("Invalid kiokuflow sync token payload.");
   }
   if (typeof parsed.a !== "string" || typeof parsed.r !== "string" || !parsed.a || !parsed.r) {
-    throw new Error("Invalid GemiHub sync token fields.");
+    throw new Error("Invalid kiokuflow sync token fields.");
   }
   return { accessToken: parsed.a, rootFolderId: parsed.r };
 }
@@ -61,11 +61,11 @@ export interface EncryptedAuthFile {
 
 export interface ExternalSyncCredentials {
   refreshToken: string;
-  /** GemiHub origin serving the token refresh endpoint (https only). */
+  /** kiokuflow origin serving the token refresh endpoint (https only). */
   apiOrigin: string;
 }
 
-/** Encryption fields from GemiHub settings. */
+/** Encryption fields from kiokuflow settings. */
 export interface EncryptionKeyMaterial {
   publicKey: string;
   encryptedPrivateKey: string;
@@ -102,7 +102,7 @@ export function parseEncryptedAuthFile(content: string | unknown): EncryptedAuth
 }
 
 /**
- * Unlock `_encrypted-auth.json` with the GemiHub encryption password.
+ * Unlock `_encrypted-auth.json` with the kiokuflow encryption password.
  * Throws a generic error for a wrong password; rejects non-https origins so a
  * tampered file cannot redirect refresh tokens to a plain-HTTP endpoint.
  */
@@ -112,7 +112,7 @@ export async function decryptEncryptedAuth(file: EncryptedAuthFile, password: st
     const privateKey = await decryptPrivateKey(file.encryptedPrivateKey, file.salt, password);
     payload = JSON.parse(await decryptData(file.data, privateKey));
   } catch {
-    throw new Error("Could not unlock Drive credentials. Check the GemiHub encryption password.");
+    throw new Error("Could not unlock Drive credentials. Check the kiokuflow encryption password.");
   }
   if (typeof payload.refreshToken !== "string" || !payload.refreshToken || typeof payload.apiOrigin !== "string") {
     throw new Error("Encrypted Drive credentials are incomplete.");
@@ -136,7 +136,7 @@ export interface TokenRefreshRequest {
 }
 
 /**
- * The refresh request every client sends. `rootFolderId` lets GemiHub resolve
+ * The refresh request every client sends. `rootFolderId` lets kiokuflow resolve
  * the account (plan entitlement) that owns the synced Drive folder.
  */
 export function buildTokenRefreshRequest(

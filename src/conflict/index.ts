@@ -35,7 +35,7 @@ export interface ParsedConflictBackupName {
 const BACKUP_NAME = /^(.+)_(\d{8})_(\d{6})(?:_(\d{3}))?(\.[^.]+)?$/;
 
 /**
- * Parse a backup name written by any GemiHub client version:
+ * Parse a backup name written by any kiokuflow client version:
  * current names, legacy second-resolution names (`_YYYYMMDD_HHMMSS`) and
  * legacy millisecond names with "/" replaced by "_".
  */

@@ -25,9 +25,9 @@ test("migration tokens round-trip and match GemiHub's Buffer-based encoding", ()
 });
 
 test("decodeMigrationToken rejects malformed tokens", () => {
-  assert.throws(() => decodeMigrationToken(""), /Invalid GemiHub sync token/);
-  assert.throws(() => decodeMigrationToken("abc"), /Invalid GemiHub sync token/);
-  assert.throws(() => decodeMigrationToken("zz"), /Invalid GemiHub sync token/);
+  assert.throws(() => decodeMigrationToken(""), /Invalid kiokuflow sync token/);
+  assert.throws(() => decodeMigrationToken("abc"), /Invalid kiokuflow sync token/);
+  assert.throws(() => decodeMigrationToken("zz"), /Invalid kiokuflow sync token/);
   assert.throws(() => decodeMigrationToken(encodeMigrationToken({ accessToken: "", rootFolderId: "r" })), /fields/);
 });
 
